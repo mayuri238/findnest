@@ -4,11 +4,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf import settings
 from django.conf.urls.static import static
+from listings import views as listings_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('listings.urls')),
-    path('property/<int:pk>/'),
+    path('users/', include('users.urls')),
+    path('property/<int:pk>/', listings_views.property_detail, name='property_detail'),
+
     path('accounts/', include('django.contrib.auth.urls')), 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
