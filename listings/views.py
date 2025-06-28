@@ -7,6 +7,42 @@ from django.contrib.auth.decorators import login_required
 from .forms import PropertyForm
 from django.shortcuts import render, get_object_or_404
 from .models import Property
+from django.db.models import Q
+from django.core.mail import send_mail
+from django.conf import settings
+from listings.views import property_detail
+
+from .forms import ContactForm
+
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            send_mail(
+                f"New Inquiry from {form.cleaned_data['name']}",
+                form.cleaned_data['message'],
+                form.cleaned_data['email'],
+                [settings.DEFAULT_FROM_EMAIL],
+                fail_silently=False,
+            )
+            return render(request, 'listings/contact_success.html')
+    else:
+        form = ContactForm()
+    return render(request, 'listings/contact.html', {'form': form})
+
+
+
+def property_search(request):
+    location = request.GET.get('location')
+    max_price = request.GET.get('max_price')
+    properties = Property.objects.all()
+    
+    if location:
+        properties = properties.filter(location__icontains=location)
+    if max_price:
+        properties = properties.filter(price__lte=max_price)
+    
+    return render(request, 'listings/search_results.html', {'properties': properties})
 
 def home(request):
     properties = Property.objects.all()
