@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 
 class CustomLoginView(LoginView):
-    template_name = 'users/login.html'  # ✅ Corrected line
+    users = 'users/login.html'  # ✅ Corrected line
 
 def signup_view(request):
     if request.method == 'POST':
