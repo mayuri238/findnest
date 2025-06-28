@@ -10,7 +10,7 @@ from .models import Property
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
-from listings.views import property_detail
+
 
 from .forms import ContactForm
 
