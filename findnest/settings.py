@@ -26,12 +26,12 @@ SECRET_KEY = 'django-insecure-fl-m&la%6_zkc86j2fd5)94fi%v)#ut_ij3z3oha^sf14rt-i4
 DEBUG = True
 
 import os
+
 ALLOWED_HOSTS = [
+    'findnest-vfgs.onrender.com',  # Replace with your exact Render URL!
     '127.0.0.1',
     'localhost',
-    'findnest.onrender.com',
 ]
-
 
 # Application definition
 
