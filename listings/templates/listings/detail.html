@@ -1,4 +1,4 @@
-{% extends "listings/base.html" %}
+{% extends "base.html" %}
 {% block content %}
 <div class="container mt-4">
   <h2>{{ property.title }}</h2>
@@ -11,16 +11,75 @@
 
   {% if property.latitude and property.longitude %}
     <div id="map" style="height:400px; margin-top:20px;"></div>
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-      var map = L.map('map').setView([{{ property.latitude }}, {{ property.longitude }}], 15);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © OpenStreetMap contributors'
-      }).addTo(map);
-      L.marker([{{ property.latitude }}, {{ property.longitude }}]).addTo(map)
-        .bindPopup('{{ property.title }}').openPopup();
-    </script>
+    <script>
+  var lat = {{ property.latitude|default:0 }};
+  var lng = {{ property.longitude|default:0 }};
+  var map = L.map('map').setView([lat, lng], 13);
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Add property marker
+  L.marker([lat, lng]).addTo(map)
+    .bindPopup("{{ property.title }}").openPopup();
+
+  // Calculate distance in km using Haversine formula
+  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of Earth in km
+    var dLat = deg2rad(lat2-lat1);
+    var dLon = deg2rad(lon2-lon1);
+    var a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI/180)
+  }
+
+  // Try to locate the user
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var userLat = position.coords.latitude;
+      var userLng = position.coords.longitude;
+
+      // Add user marker
+      var userMarker = L.marker([userLat, userLng], {color: 'blue'}).addTo(map)
+        .bindPopup("You are here").openPopup();
+
+      // Calculate distance
+      var distance = getDistanceFromLatLonInKm(lat, lng, userLat, userLng).toFixed(2);
+
+      // Add a line between the user and property
+      var line = L.polyline([[lat, lng], [userLat, userLng]], {color: 'green'}).addTo(map);
+
+      // Add distance info as a popup at the line’s center
+      var midLat = (lat + userLat) / 2;
+      var midLng = (lng + userLng) / 2;
+      L.popup()
+        .setLatLng([midLat, midLng])
+        .setContent("Distance: " + distance + " km")
+        .openOn(map);
+
+      // Adjust map bounds
+      var bounds = L.latLngBounds([lat, lng], [userLat, userLng]);
+      map.fitBounds(bounds, {padding: [50, 50]});
+    }, function() {
+      console.log("Location access denied by user.");
+    });
+  } else {
+    console.log("Geolocation is not supported by this browser.");
+  }
+</script>
   {% endif %}
 </div>
 {% endblock %}
