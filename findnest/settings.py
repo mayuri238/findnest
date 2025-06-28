@@ -28,9 +28,9 @@ DEBUG = True
 import os
 
 ALLOWED_HOSTS = [
-    'findnest-vfgs.onrender.com',  # Replace with your exact Render URL!
-    '127.0.0.1',
-    'localhost',
+    'findnest-vfgs.onrender.com',  # Your full Render domain
+    '127.0.0.1',                   # For local development
+    'localhost',                   # Optional but helpful for local tests
 ]
 
 # Application definition
