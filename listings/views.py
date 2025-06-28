@@ -5,6 +5,8 @@ from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .forms import PropertyForm
+from django.shortcuts import render, get_object_or_404
+from .models import Property
 
 def home(request):
     properties = Property.objects.all()
@@ -46,3 +48,8 @@ def add_property(request):
     else:
         form = PropertyForm()
     return render(request, 'listings/add_property.html', {'form': form})
+
+
+def property_detail(request, pk):
+    property = get_object_or_404(Property, pk=pk)
+    return render(request, 'listings/detail.html', {'property': property})
