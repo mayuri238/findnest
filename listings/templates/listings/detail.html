@@ -1,0 +1,26 @@
+{% extends "listings/base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>{{ property.title }}</h2>
+  <p>{{ property.description }}</p>
+  <p><strong>Address:</strong> {{ property.address }}</p>
+  <p><strong>Rent:</strong> ₹{{ property.rent }}</p>
+  {% if property.image %}
+    <img src="{{ property.image.url }}" width="500">
+  {% endif %}
+
+  {% if property.latitude and property.longitude %}
+    <div id="map" style="height:400px; margin-top:20px;"></div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      var map = L.map('map').setView([{{ property.latitude }}, {{ property.longitude }}], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors'
+      }).addTo(map);
+      L.marker([{{ property.latitude }}, {{ property.longitude }}]).addTo(map)
+        .bindPopup('{{ property.title }}').openPopup();
+    </script>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "listings/base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FindNest - Home</title>
+</head>
+<body>
+  <h1>Welcome to FindNest</h1>
+  <form method="get">
+    <input type="text" name="q" placeholder="Search by address" value="{{ request.GET.q }}">
+    <button type="submit">Search</button>
+  </form>
+
+  <div>
+    {% for property in properties %}
+      <div style="margin-bottom: 20px;">
+        <h3><a href="{% url 'property_detail' property.pk %}">{{ property.title }}</a></h3>
+        <p>{{ property.address }} | ₹{{ property.rent }}</p>
+        {% if property.image %}
+          <img src="{{ property.image.url }}" width="300">
+        {% endif %}
+      </div>
+    
+    {% empty %}
+      <p>No properties found.</p>
+      <form method="get" class="row g-2">
+  <div class="col-md-4">
+    <input type="text" name="q" class="form-control" placeholder="Search by address" value="{{ request.GET.q }}">
+  </div>
+  <div class="col-md-2">
+    <input type="number" name="min_rent" class="form-control" placeholder="Min Rent" value="{{ request.GET.min_rent }}">
+  </div>
+  <div class="col-md-2">
+    <input type="number" name="max_rent" class="form-control" placeholder="Max Rent" value="{{ request.GET.max_rent }}">
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100">Search</button>
+  </div>
+</form>
+    {% endfor %}
+  </div>
+</body>
+</html>
