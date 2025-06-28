@@ -25,8 +25,10 @@ SECRET_KEY = 'django-insecure-fl-m&la%6_zkc86j2fd5)94fi%v)#ut_ij3z3oha^sf14rt-i4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+import os
+ALLOWED_HOSTS = [
+    'findnest.onrender.com',  # Replace with your actual Render URL
+]
 
 # Application definition
 
@@ -125,3 +127,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
