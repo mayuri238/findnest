@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
 
+
 class CustomLoginView(LoginView):
-    users = 'users/login.html'  # ✅ Corrected line
+    template_name = 'registration/login.html'
+
 
 def signup_view(request):
     if request.method == 'POST':
@@ -15,7 +17,8 @@ def signup_view(request):
             return redirect('home')
     else:
         form = UserCreationForm()
-    return render(request, 'users/signup.html', {'form': form})
+    return render(request, 'registration/signup.html', {'form': form})
+
 
 def logout_view(request):
     logout(request)
