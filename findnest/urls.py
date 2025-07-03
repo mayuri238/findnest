@@ -7,7 +7,7 @@ from listings import views as listings_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('listings.urls')),
-    path('accounts/', include('users.urls')),  # Make sure this matches your links
+    path('accounts/', include('django.contrib.auth.urls')),
     path('property/<int:pk>/', listings_views.property_detail, name='property_detail'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
